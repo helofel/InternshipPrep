@@ -38,7 +38,8 @@ int *unique_integers(size_t len, int *array)
 
 void sort_the_summary(size_t len, int *array)
 {
-    int ** result;
+    int **result;
+    int **new_res;
     int counter;
     const int inf = INFINITY;
 
@@ -56,7 +57,6 @@ void sort_the_summary(size_t len, int *array)
         }
     }
 
-    //printf("%d\n", (int)INFINITY);
     for (unsigned long index = 0; index < len; ++index)
     {
         result[index][0] = inf;
@@ -89,55 +89,86 @@ void sort_the_summary(size_t len, int *array)
             {
                 result[k][0] = array[index];
                 result[k][1] = counter;
-                //printf("%d %d\n", result[k][0], result[k][1]);
                 break; //THIS BREAK WAS REALLY IMPORTANT
             }
         }
     }
 
+    //resizing array to get rid of infs
+    int bound = 0;
     for (int index = 0; index < (int)len; ++index)
     {
-        if(result[index][0] == inf){
-            result[index][0] = -inf;
-            result[index][1] = -inf;
+        if (result[index][0] == inf)
+        {
+            break;
         }
+        bound++;
         //printf("%d %d\n", result[index][0], result[index][1]);
     }
 
+    new_res = malloc(sizeof(int *) * bound);
+
+    for (int index = 0; index < (int)len; ++index)
+    {
+        new_res[index] = malloc(sizeof(int) * 2);
+    }
+
+    for (int index = 0; index < bound; ++index)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            if (result[index][0] != inf)
+            {
+                new_res[index][0] = result[index][0];
+                new_res[index][1] = result[index][1];
+            }
+        }
+    }
+
+    printf("\nResized array: \n");
+    for (int index = 0; index < bound; ++index)
+    {
+        printf("%d %d\n", new_res[index][0], new_res[index][1]);
+    }
+
+    printf("\n");
+
     printf("\n");
     //Sort by descending frequency
-    qsort(result, len, sizeof(result[0]), comparator);
+    qsort(new_res, bound, sizeof(new_res[0]), comparator);
 
-    for (int index = 0; index < (int)len; ++index)
+    for (int index = 0; index < bound; ++index)
     {
-        printf("%d %d\n", result[index][0], result[index][1]);
+        printf("%d %d\n", new_res[index][0], new_res[index][1]);
     }
 
     printf("\n");
-    //Sort by ascending value
-    qsort(result, len, sizeof(result[0]), comparator_2);
-    for (int index = 0; index < (int)len; ++index)
+    //Sort by ascending value while maintaining descending frequencies
+    qsort(new_res, bound, sizeof(new_res[0]), comparator_2);
+
+    for (int index = 0; index < bound; ++index)
     {
-        printf("%d %d\n", result[index][0], result[index][1]);
+        printf("%d %d\n", new_res[index][0], new_res[index][1]);
     }
 
-
     free(result);
+    free(new_res);
 }
 
-int comparator(const void * a, const void * b){
-    const int * l = *(const int **)a;
-    const int * r = *(const int **)b;
+int comparator(const void *a, const void *b)
+{
+    const int *l = *(const int **)a;
+    const int *r = *(const int **)b;
     return (r[1] - l[1]);
 }
 
-
-int comparator_2(const void * a, const void * b){
-    const int * l = *(const int **)a;
-    const int * r = *(const int **)b;
-    if((r[1] - l[1]) && (l[0] - r[0])) 
+int comparator_2(const void *a, const void *b)
+{
+    const int *l = *(const int **)a;
+    const int *r = *(const int **)b;
+    if (r[1] == l[1])
         return (l[0] - r[0]);
-    
+
     return (r[1] - l[1]);
 }
 
