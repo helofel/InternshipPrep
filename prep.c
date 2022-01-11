@@ -5,6 +5,7 @@
 
 int *unique_integers(size_t, int *);
 void sort_the_summary(size_t, int *);
+void reverse(size_t, size_t, void *);
 int comparator(const void *, const void *);
 int comparator_2(const void *, const void *);
 
@@ -41,7 +42,8 @@ void sort_the_summary(size_t len, int *array)
     int **result;
     int **new_res;
     int counter;
-    const int inf = INFINITY;
+
+    const float inf = INFINITY;
 
     result = malloc(sizeof(int *) * (int)len);
     for (unsigned long index = 0; index < len; ++index)
@@ -53,14 +55,14 @@ void sort_the_summary(size_t len, int *array)
     {
         for (unsigned long j = 0; j < 2; ++j)
         {
-            result[index][j] = inf;
+            result[index][j] = (int)inf;
         }
     }
 
     for (unsigned long index = 0; index < len; ++index)
     {
-        result[index][0] = inf;
-        result[index][1] = inf;
+        result[index][0] = (int)inf;
+        result[index][1] = (int)inf;
     }
 
     for (unsigned long index = 0; index < len; ++index)
@@ -85,7 +87,7 @@ void sort_the_summary(size_t len, int *array)
             {
                 break;
             }
-            else if (result[k][0] == inf)
+            else if (result[k][0] == (int)inf)
             {
                 result[k][0] = array[index];
                 result[k][1] = counter;
@@ -94,11 +96,11 @@ void sort_the_summary(size_t len, int *array)
         }
     }
 
-    //resizing array to get rid of infs
+    //resizing array to get rid of (int)infs
     int bound = 0;
     for (int index = 0; index < (int)len; ++index)
     {
-        if (result[index][0] == inf)
+        if (result[index][0] == (int)inf)
         {
             break;
         }
@@ -117,7 +119,7 @@ void sort_the_summary(size_t len, int *array)
     {
         for (int j = 0; j < 2; ++j)
         {
-            if (result[index][0] != inf)
+            if (result[index][0] != (int)inf)
             {
                 new_res[index][0] = result[index][0];
                 new_res[index][1] = result[index][1];
@@ -172,9 +174,19 @@ int comparator_2(const void *a, const void *b)
     return (r[1] - l[1]);
 }
 
+void reverse(size_t low, size_t high, void * ptr){
+    int * new_ptr = (int *)ptr;
+    if(low < high){
+        int temp = new_ptr[low];
+        new_ptr[low] = new_ptr[high];
+        new_ptr[high] = temp;  
+        reverse(++low, --high, ptr);
+    }
+}
+
 int main(int argv, char **argc)
 {
-    printf("%d %s\n", argv, argc[0]);
+    printf("%d %s\n\n", argv, argc[0]);
 
     /*------------------------------------------------------*/
     int *uniques;
@@ -212,6 +224,19 @@ int main(int argv, char **argc)
 
     int arr[] = {3, 3, 1, 2, 1};
     sort_the_summary(sizeof(arr) / sizeof(arr[0]), arr);
+
+    /*------------------------------------------------------*/
+    int a[] = {1,2,3,4,5,6,7,8,9};
+    unsigned long n = sizeof(a) / sizeof(a[0]);
+    reverse(0, n - 1, a);
+
+    printf("\n");
+    for(unsigned long index = 0; index < n; ++index){
+        printf("%d ", a[index]);
+    }
+    printf("\n");
+
+    /*---------------------------------------------------*/
 
     return 0;
 }
