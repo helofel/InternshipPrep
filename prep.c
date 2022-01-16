@@ -2,12 +2,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int *unique_integers(size_t, int *);
 void sort_the_summary(size_t, int *);
 void reverse(size_t, size_t, void *);
 int comparator(const void *, const void *);
 int comparator_2(const void *, const void *);
+void set_default(int **, int, int);
 
 int *unique_integers(size_t len, int *array)
 {
@@ -184,6 +186,20 @@ void reverse(size_t low, size_t high, void * ptr){
     }
 }
 
+void set_default(int ** ptr, int m, int n){ 
+    //const double d = INFINITY;
+
+    //memset(ptr, d, sizeof(*ptr));
+    printf("I am in");
+    for(int index = 0; index < m; ++index){
+        printf("got here");
+        for(int x = 0; x < n; ++x){
+            printf("%lf ", (double)ptr[m][n]);
+        }
+        printf("\n");
+    }
+}
+
 int main(int argv, char **argc)
 {
     printf("%d %s\n\n", argv, argc[0]);
@@ -236,6 +252,17 @@ int main(int argv, char **argc)
     }
     printf("\n");
 
+    /*---------------------------------------------------*/
+    int ** to_set = malloc(sizeof(int *) * 100);
+
+    for(int index = 0; index < 100; ++index){
+        to_set[index] =  malloc(sizeof(int) * 5);
+    }
+
+    printf("Yee");
+    set_default(to_set, 100, 5);
+
+    free(to_set);
     /*---------------------------------------------------*/
 
     return 0;
