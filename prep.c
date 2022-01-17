@@ -9,7 +9,13 @@ void sort_the_summary(size_t, int *);
 void reverse(size_t, size_t, void *);
 int comparator(const void *, const void *);
 int comparator_2(const void *, const void *);
-void set_default(int **, int, int);
+int bsearchcmp(const void *, const void *);
+
+struct data
+{
+    int value;
+    int frequency;
+};
 
 int *unique_integers(size_t len, int *array)
 {
@@ -176,27 +182,22 @@ int comparator_2(const void *a, const void *b)
     return (r[1] - l[1]);
 }
 
-void reverse(size_t low, size_t high, void * ptr){
-    int * new_ptr = (int *)ptr;
-    if(low < high){
-        int temp = new_ptr[low];
-        new_ptr[low] = new_ptr[high];
-        new_ptr[high] = temp;  
-        reverse(++low, --high, ptr);
-    }
+int bsearchcmp(const void *a, const void *b)
+{
+    struct data *l = (struct data *)a;
+    struct data *r = (struct data *)b;
+    return (r->value - l->value);
 }
 
-void set_default(int ** ptr, int m, int n){ 
-    //const double d = INFINITY;
-
-    //memset(ptr, d, sizeof(*ptr));
-    printf("I am in");
-    for(int index = 0; index < m; ++index){
-        printf("got here");
-        for(int x = 0; x < n; ++x){
-            printf("%lf ", (double)ptr[m][n]);
-        }
-        printf("\n");
+void reverse(size_t low, size_t high, void *ptr)
+{
+    int *new_ptr = (int *)ptr;
+    if (low < high)
+    {
+        int temp = new_ptr[low];
+        new_ptr[low] = new_ptr[high];
+        new_ptr[high] = temp;
+        reverse(++low, --high, ptr);
     }
 }
 
@@ -242,27 +243,48 @@ int main(int argv, char **argc)
     sort_the_summary(sizeof(arr) / sizeof(arr[0]), arr);
 
     /*------------------------------------------------------*/
-    int a[] = {1,2,3,4,5,6,7,8,9};
+    int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     unsigned long n = sizeof(a) / sizeof(a[0]);
     reverse(0, n - 1, a);
 
     printf("\n");
-    for(unsigned long index = 0; index < n; ++index){
+    for (unsigned long index = 0; index < n; ++index)
+    {
         printf("%d ", a[index]);
     }
     printf("\n");
 
     /*---------------------------------------------------*/
-    int ** to_set = malloc(sizeof(int *) * 100);
 
-    for(int index = 0; index < 100; ++index){
-        to_set[index] =  malloc(sizeof(int) * 5);
+    unsigned long length_1 = sizeof(nums) / sizeof(nums[0]);
+    unsigned long length_2 = sizeof(nums2) / sizeof(nums2[0]);
+    unsigned long length_3 = sizeof(nums3) / sizeof(nums3[0]);
+
+    struct data *Data_1 = malloc(sizeof(struct data) * (int)length_1);
+    struct data *Data_2 = malloc(sizeof(struct data) * (int)length_2);
+    struct data *Data_3 = malloc(sizeof(struct data) * (int)length_3);
+    struct data *temp = malloc(sizeof(struct data));
+
+    for (int index = 0; index < (int)length_1; ++index)
+    {
+        temp = (struct data *)bsearch(&nums[index], nums, length_1, sizeof(int), bsearchcmp);
+        if (temp != NULL)
+            continue;
+        Data_1[index].value = nums[index];
+        Data_1[index].frequency = 0;
     }
 
-    printf("Yee");
-    set_default(to_set, 100, 5);
+    printf("\n\nUsing binary Search\n");
+    for (int index = 0; index < (int)length_1; ++index)
+    {
+        printf("%2d %2d\n", Data_1[index].value, Data_1[index].frequency);
+    }
+    printf("\n");
 
-    free(to_set);
+    free(Data_1);
+    free(Data_2);
+    free(Data_3);
+    free(temp);
     /*---------------------------------------------------*/
 
     return 0;
