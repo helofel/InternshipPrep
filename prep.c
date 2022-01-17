@@ -182,23 +182,21 @@ int comparator_2(const void *a, const void *b)
     return (r[1] - l[1]);
 }
 
+void reverse(size_t low, size_t high, void * ptr){
+    int * new_ptr = (int *)ptr;
+    if(low < high){
+        int temp = new_ptr[low];
+        new_ptr[low] = new_ptr[high];
+        new_ptr[high] = temp;  
+        reverse(++low, --high, ptr);
+    }
+}
+
 int bsearchcmp(const void *a, const void *b)
 {
     struct data *l = (struct data *)a;
     struct data *r = (struct data *)b;
     return (r->value - l->value);
-}
-
-void reverse(size_t low, size_t high, void *ptr)
-{
-    int *new_ptr = (int *)ptr;
-    if (low < high)
-    {
-        int temp = new_ptr[low];
-        new_ptr[low] = new_ptr[high];
-        new_ptr[high] = temp;
-        reverse(++low, --high, ptr);
-    }
 }
 
 int main(int argv, char **argc)
@@ -243,19 +241,17 @@ int main(int argv, char **argc)
     sort_the_summary(sizeof(arr) / sizeof(arr[0]), arr);
 
     /*------------------------------------------------------*/
-    int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int a[] = {1,2,3,4,5,6,7,8,9};
     unsigned long n = sizeof(a) / sizeof(a[0]);
     reverse(0, n - 1, a);
 
     printf("\n");
-    for (unsigned long index = 0; index < n; ++index)
-    {
+    for(unsigned long index = 0; index < n; ++index){
         printf("%d ", a[index]);
     }
     printf("\n");
 
     /*---------------------------------------------------*/
-
     unsigned long length_1 = sizeof(nums) / sizeof(nums[0]);
     unsigned long length_2 = sizeof(nums2) / sizeof(nums2[0]);
     unsigned long length_3 = sizeof(nums3) / sizeof(nums3[0]);
@@ -263,7 +259,8 @@ int main(int argv, char **argc)
     struct data *Data_1 = malloc(sizeof(struct data) * (int)length_1);
     struct data *Data_2 = malloc(sizeof(struct data) * (int)length_2);
     struct data *Data_3 = malloc(sizeof(struct data) * (int)length_3);
-    struct data *temp = malloc(sizeof(struct data));
+    struct data *temp;
+    //struct data *temp = malloc(sizeof(struct data));
 
     for (int index = 0; index < (int)length_1; ++index)
     {
@@ -280,11 +277,41 @@ int main(int argv, char **argc)
         printf("%2d %2d\n", Data_1[index].value, Data_1[index].frequency);
     }
     printf("\n");
+    /////////////////////////////////////
+    for (int index = 0; index < (int)length_2; ++index)
+    {
+        temp = (struct data *)bsearch(&nums2[index], nums2, length_2, sizeof(int), bsearchcmp);
+        if (temp != NULL)
+            continue;
+        Data_2[index].value = nums2[index];
+        Data_2[index].frequency = 0;
+    }
+
+    for (int index = 0; index < (int)length_2; ++index)
+    {
+        printf("%2d %2d\n", Data_2[index].value, Data_2[index].frequency);
+    }
+    printf("\n");
+    /////////////////////////////////////
+    for (int index = 0; index < (int)length_3; ++index)
+    {
+        temp = (struct data *)bsearch(&nums3[index], nums3, length_3, sizeof(int), bsearchcmp);
+        if (temp != NULL)
+            continue;
+        Data_3[index].value = nums3[index];
+        Data_3[index].frequency = 0;
+    }
+
+    for (int index = 0; index < (int)length_3; ++index)
+    {
+        printf("%2d %2d\n", Data_3[index].value, Data_3[index].frequency);
+    }
+    printf("\n");
 
     free(Data_1);
     free(Data_2);
     free(Data_3);
-    free(temp);
+    //free(temp);
     /*---------------------------------------------------*/
 
     return 0;
